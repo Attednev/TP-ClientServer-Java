@@ -23,7 +23,7 @@ public class ServerUtility {
                 if (args.length >= 4) {
                     int from = Integer.parseInt(args[2]);
                     int to = Integer.parseInt(args[3]);
-                    ServerUtility.translateNumber(args[1], from, to); // Change number system
+                    ServerUtility.sendTranslatedNumber(args[1], from, to); // Change number system
                 }
                 break;
             case "exit":
@@ -52,7 +52,7 @@ public class ServerUtility {
     }
 
 
-    private static void translateNumber(String num, int from, int to) {
+    private static void sendTranslatedNumber(String num, int from, int to) {
         if (from != 10) {
             // Get number in decimal value
             num = String.valueOf(Integer.parseInt(num, from));

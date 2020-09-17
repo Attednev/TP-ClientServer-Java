@@ -43,7 +43,8 @@ public class Client implements Runnable {
                     System.out.println("ERROR: Server not reachable. Aborting connection");
                     try {
                         this.clientSocket.close();
-                    } catch (IOException ignore) {}
+                    } catch (IOException ignore) {
+                    }
                     return;
                 }
             }
@@ -63,7 +64,8 @@ public class Client implements Runnable {
                     System.out.println("ERROR: Server not reachable. Aborting connection");
                     try {
                         this.clientSocket.close();
-                    } catch (IOException ignore) {}
+                    } catch (IOException ignore) {
+                    }
                     return;
                 }
             }
