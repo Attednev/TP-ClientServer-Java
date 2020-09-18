@@ -9,6 +9,7 @@ import java.util.concurrent.*;
 
 public class Client implements Runnable {
     private Socket clientSocket = null;
+    private int lostPackageCounter = 0;
 
     protected Client(String server, int port) {
         try {
@@ -33,7 +34,7 @@ public class Client implements Runnable {
     private void writerService() {
         while (true) {
             Scanner scanner = new Scanner(System.in);
-            String text = scanner.next();
+            String text = scanner.nextLine();
             try {
                 SocketUtility.sendMessage(this.clientSocket, text);
             } catch (IOException e) {
@@ -57,15 +58,11 @@ public class Client implements Runnable {
             try {
                 String text = SocketUtility.readMessage(this.clientSocket);
                 System.out.println(text);
+                this.lostPackageCounter = 0;
             } catch (IOException e) {
-                if (this.clientSocket.isConnected()) {
-                    System.out.println("WARNING: Could not read from server!");
-                } else {
+                if (this.lostPackageCounter++ >= 3) {
                     System.out.println("ERROR: Server not reachable. Aborting connection");
-                    try {
-                        this.clientSocket.close();
-                    } catch (IOException ignore) {
-                    }
+                    try { this.clientSocket.close(); } catch (IOException ignore) {}
                     return;
                 }
             }

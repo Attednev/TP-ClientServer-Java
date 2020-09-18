@@ -1,6 +1,7 @@
 package Utility;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,7 +24,7 @@ public class ServerUtility {
                 if (args.length >= 4) {
                     int from = Integer.parseInt(args[2]);
                     int to = Integer.parseInt(args[3]);
-                    ServerUtility.sendTranslatedNumber(args[1], from, to); // Change number system
+                    ServerUtility.sendTranslatedNumber(socket, args[1], from, to); // Change number system
                 }
                 break;
             case "exit":
@@ -42,6 +43,7 @@ public class ServerUtility {
                 "exit - Unterbrich die Verbindung");
     }
 
+    // TODO:
     // Function that sends the time and date of a specific time zone to the client
     private static void sendTimeZone(Socket socket, String timeZone) throws IOException {
         String zone = timeZone.toLowerCase();
@@ -52,13 +54,10 @@ public class ServerUtility {
     }
 
 
-    private static void sendTranslatedNumber(String num, int from, int to) {
-        if (from != 10) {
-            // Get number in decimal value
-            num = String.valueOf(Integer.parseInt(num, from));
-        }
-        // Translate into "to"
-
+    private static void sendTranslatedNumber(Socket socket, String num, int from, int to) throws IOException {
+        int dec = Integer.parseInt(num, from);
+        String number = Integer.toString(dec, to);
+        SocketUtility.sendMessage(socket, number);
     }
 
 
