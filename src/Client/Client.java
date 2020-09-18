@@ -27,7 +27,6 @@ public class Client implements Runnable {
         ExecutorService executor = Executors.newCachedThreadPool();
         executor.execute(this::readerService);
         executor.execute(this::writerService);
-        executor.shutdown(); // TODO: CHECK IF THIS IS CORRECT
     }
 
     // Function to write user input to server
@@ -38,16 +37,7 @@ public class Client implements Runnable {
             try {
                 SocketUtility.sendMessage(this.clientSocket, text);
             } catch (IOException e) {
-                if (this.clientSocket.isConnected()) {
-                    System.out.println("ERROR: Could not send command");
-                } else {
-                    System.out.println("ERROR: Server not reachable. Aborting connection");
-                    try {
-                        this.clientSocket.close();
-                    } catch (IOException ignore) {
-                    }
-                    return;
-                }
+                System.out.println("ERROR: Could not send command");
             }
         }
     }
@@ -56,15 +46,16 @@ public class Client implements Runnable {
     private void readerService() {
         while (true) {
             try {
-                String text = SocketUtility.readMessage(this.clientSocket);
-                System.out.println(text);
-                this.lostPackageCounter = 0;
-            } catch (IOException e) {
-                if (this.lostPackageCounter++ >= 3) {
+                if (this.clientSocket.getInputStream().read() == -1) { // -1 If the server dies
                     System.out.println("ERROR: Server not reachable. Aborting connection");
                     try { this.clientSocket.close(); } catch (IOException ignore) {}
                     return;
                 }
+                // Reading and printing the message
+                String text = SocketUtility.readMessage(this.clientSocket);
+                System.out.println(text);
+            } catch (IOException e) {
+                System.out.println("WARNING: Could not read message from server"); // Reading error
             }
         }
     }
