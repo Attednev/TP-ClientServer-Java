@@ -9,7 +9,7 @@ public class Main {
     // Main Driver function for the client
     public static void main(String[] args) {
         Client client = new Client("localhost", 5555);
-        ExecutorService executor = Executors.newCachedThreadPool();
-        executor.execute(client);
+        ExecutorService clientExecutor = Executors.newCachedThreadPool();
+        clientExecutor.execute(client);
     }
 }

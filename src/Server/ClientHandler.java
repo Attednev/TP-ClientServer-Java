@@ -7,13 +7,16 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
-    private final Socket socket;
+    private final Socket clientSocket;
 
     protected ClientHandler(Socket socket) {
-        this.socket = socket;
-        // Send initial message
+        this.clientSocket = socket;
+        this.sendInitialMessage();
+    }
+
+    private void sendInitialMessage() {
         try {
-            ServerUtility.executeCommand(this.socket, new String[]{"help"});
+            ServerUtility.executeCommand(this.clientSocket, new String[]{"help"});
         } catch (IOException e) {
             System.out.println("<Server> Client not reachable");
         }
@@ -21,37 +24,29 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        // Start reading process
         while (true) {
-            // Read user input
-            String[] args;
+            String[] commandArguments;
             try {
-                if (this.socket.getInputStream().read() == -1) { // No connection
-                    break;
-                }
-                // Read and split
-                String userInput = SocketUtility.readMessage(this.socket);
-                System.out.println("<Server> Client command was " + userInput);
-                args = userInput.split(" "); // Split the command into arguments
+                if (this.clientSocket.getInputStream().read() == -1) break;
+                String clientMessage = SocketUtility.readMessage(this.clientSocket);
+                System.out.println("<Client> " + clientMessage);
+                commandArguments = clientMessage.split(" ");
             } catch (IOException e) {
-                System.out.println("<Server> Error: Failed to read user input"); // Error while reading
+                System.out.println("<Server> Error: Failed to read user input");
                 continue;
             }
-            // Handle the user input
+
             try {
-                if (ServerUtility.executeCommand(this.socket, args) == -1) { // Execute the command
-                    break; // User want to abort connection
-                }
+                if (ServerUtility.executeCommand(this.clientSocket, commandArguments) == -1) break;
             } catch(IOException e) {
-                // Something went wrong during command execution
                 try {
-                    SocketUtility.sendMessage(this.socket, "Der Befehl war ungültig. Bitte stellen Sie sicher, " +
+                    SocketUtility.sendMessage(this.clientSocket, "Der Befehl war ungültig. Bitte stellen Sie sicher, " +
                             "dass der Befehl richtig geschrieben wurde und dass sie die richtige anzahl an argumenten haben!");
                 } catch (IOException ignore) {}
             }
         }
         try {
-            this.socket.close();
+            this.clientSocket.close();
         } catch (IOException ignore) {
             System.out.println("Error while closing the connection");
         }
