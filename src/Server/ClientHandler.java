@@ -30,6 +30,7 @@ public class ClientHandler implements Runnable {
             int successValue = ServerUtility.executeCommand(this.clientSocket, commandArguments);
             if (successValue == -1) break;
         }
+
         System.out.println("Connection to client ended!");
         try {
             this.clientSocket.close();
@@ -37,4 +38,5 @@ public class ClientHandler implements Runnable {
             System.out.println("Error while closing the connection");
         }
     }
+
 }

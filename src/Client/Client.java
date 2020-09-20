@@ -22,13 +22,16 @@ public class Client implements Runnable {
     @Override
     public void run() {
         if (this.clientSocket == null) return;
+
         ExecutorService writerExecutor = Executors.newCachedThreadPool();
         writerExecutor.execute(this::writerService);
+
         while (true) {
             String serverMessage = SocketUtility.readMessage(this.clientSocket);
             if (serverMessage == null) break;
             System.out.println(serverMessage);
         }
+
         writerExecutor.shutdown();
         System.out.println("<System> Connection to the server ended!");
         try {
@@ -36,7 +39,6 @@ public class Client implements Runnable {
         } catch (IOException ignore) {}
     }
 
-    // Function to write user input to server
     private void writerService() {
         while (true) {
             Scanner commandlineScanner = new Scanner(System.in);
@@ -47,7 +49,7 @@ public class Client implements Runnable {
         try {
             this.clientSocket.close();
         } catch (IOException ignore) {
-            System.out.println("Error while closing the connection");
+            System.out.println("<System> Error while closing the connection");
         }
     }
 
