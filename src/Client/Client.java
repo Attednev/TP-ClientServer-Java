@@ -26,30 +26,25 @@ public class Client implements Runnable {
         ExecutorService writerExecutor = Executors.newCachedThreadPool();
         writerExecutor.execute(this::writerService);
 
+        this.readerService();
+
+        writerExecutor.shutdownNow();
+    }
+
+    private void readerService() {
         while (true) {
             String serverMessage = SocketUtility.readMessage(this.clientSocket);
             if (serverMessage == null) break;
             System.out.println(serverMessage);
         }
-
-        writerExecutor.shutdown();
-        System.out.println("<System> Connection to the server ended!");
-        try {
-            this.clientSocket.close();
-        } catch (IOException ignore) {}
+        SocketUtility.endConnection(this.clientSocket);
     }
 
     private void writerService() {
         while (true) {
             Scanner commandlineScanner = new Scanner(System.in);
             String userInput = commandlineScanner.nextLine();
-            int successValue = SocketUtility.sendMessage(this.clientSocket, userInput);
-            if (successValue == -1) break;
-        }
-        try {
-            this.clientSocket.close();
-        } catch (IOException ignore) {
-            System.out.println("<System> Error while closing the connection");
+            SocketUtility.sendMessage(this.clientSocket, userInput);
         }
     }
 

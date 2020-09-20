@@ -7,7 +7,6 @@ import java.net.Socket;
 
 public class SocketUtility {
 
-    // Function to send a message to the socket
     public static int sendMessage(Socket socket, String message) {
         try {
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
@@ -18,7 +17,6 @@ public class SocketUtility {
         }
     }
 
-    // Function to read the text that a client sends
     public static String readMessage(Socket socket) {
         try {
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
@@ -28,5 +26,11 @@ public class SocketUtility {
         }
     }
 
+    public static void endConnection(Socket socket) {
+        System.out.println("<System> Connection ended!");
+        try {
+            socket.close();
+        } catch (IOException ignore) {}
+    }
 
 }

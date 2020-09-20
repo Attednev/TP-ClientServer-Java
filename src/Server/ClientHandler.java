@@ -3,7 +3,6 @@ package Server;
 import Utility.ServerUtility;
 import Utility.SocketUtility;
 
-import java.io.IOException;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
@@ -20,22 +19,20 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        this.handleClient();
+        SocketUtility.endConnection(this.clientSocket);
+    }
+
+    private void handleClient() {
         while (true) {
             String clientMessage = SocketUtility.readMessage(this.clientSocket);
-            if (clientMessage == null) break;
+            if (clientMessage == null) return;
 
             System.out.println("<Client> " + clientMessage);
             String[] commandArguments = clientMessage.split(" ");
 
             int successValue = ServerUtility.executeCommand(this.clientSocket, commandArguments);
-            if (successValue == -1) break;
-        }
-
-        System.out.println("<System> Connection to client ended!");
-        try {
-            this.clientSocket.close();
-        } catch (IOException e) {
-            System.out.println("<System> Error while closing the connection");
+            if (successValue == -1) return;
         }
     }
 

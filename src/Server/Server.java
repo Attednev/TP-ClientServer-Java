@@ -20,6 +20,10 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
+        this.acceptClient();
+    }
+
+    private void acceptClient() {
         ExecutorService clientExecutor = Executors.newCachedThreadPool();
         while (true) {
             try {
