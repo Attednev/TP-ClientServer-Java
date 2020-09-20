@@ -15,35 +15,20 @@ public class ClientHandler implements Runnable {
     }
 
     private void sendInitialMessage() {
-        try {
-            ServerUtility.executeCommand(this.clientSocket, new String[]{"help"});
-        } catch (IOException e) {
-            System.out.println("<Server> Client not reachable");
-        }
+        ServerUtility.executeCommand(this.clientSocket, new String[]{"help"});
     }
 
     @Override
     public void run() {
         while (true) {
-            String[] commandArguments;
-            try {
-                if (this.clientSocket.getInputStream().read() == -1) break;
-                String clientMessage = SocketUtility.readMessage(this.clientSocket);
-                System.out.println("<Client> " + clientMessage);
-                commandArguments = clientMessage.split(" ");
-            } catch (IOException e) {
-                System.out.println("<Server> Error: Failed to read user input");
-                continue;
-            }
+            String clientMessage = SocketUtility.readMessage(this.clientSocket);
+            if (clientMessage == null) continue; // Error reading TODO: break or continue
 
-            try {
-                if (ServerUtility.executeCommand(this.clientSocket, commandArguments) == -1) break;
-            } catch(IOException e) {
-                try {
-                    SocketUtility.sendMessage(this.clientSocket, "Der Befehl war ungültig. Bitte stellen Sie sicher, " +
-                            "dass der Befehl richtig geschrieben wurde und dass sie die richtige anzahl an argumenten haben!");
-                } catch (IOException ignore) {}
-            }
+            System.out.println("<Client> " + clientMessage);
+            String[] commandArguments = clientMessage.split(" ");
+
+            int successValue = ServerUtility.executeCommand(this.clientSocket, commandArguments);
+            if (successValue == -1) break;
         }
         try {
             this.clientSocket.close();

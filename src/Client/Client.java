@@ -47,11 +47,13 @@ public class Client implements Runnable {
         while (true) {
             Scanner commandlineScanner = new Scanner(System.in);
             String userInput = commandlineScanner.nextLine();
-            try {
-                SocketUtility.sendMessage(this.clientSocket, userInput);
-            } catch (IOException e) {
-                System.out.println("ERROR: Could not send command");
-            }
+            int successValue = SocketUtility.sendMessage(this.clientSocket, userInput);
+            if (successValue == -1) break;
+        }
+        try {
+            this.clientSocket.close();
+        } catch (IOException ignore) {
+            System.out.println("Error while closing the connection");
         }
     }
 

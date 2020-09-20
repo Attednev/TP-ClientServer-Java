@@ -11,28 +11,31 @@ import java.util.TimeZone;
 public class ServerUtility {
 
     // Function that executes a given command with its arguments
-    public static int executeCommand(Socket socket, String[] args) throws IOException {
-        String command = args[0].toLowerCase();
-        switch (command) {
-            case "help":
-                ServerUtility.sendHelp(socket); // Help
-                break;
-            case "tz":
-                ServerUtility.sendTimeZone(socket, args[1]); // TimeZone
-                break;
-            case "tn":
-                if (args.length >= 4) {
-                    int from = Integer.parseInt(args[2]);
-                    int to = Integer.parseInt(args[3]);
-                    ServerUtility.sendTranslatedNumber(socket, args[1], from, to); // Change number system
-                }
-                break;
-            case "exit":
-                return -1;
-            default:
-                SocketUtility.sendMessage(socket, "Unknown command");
-        }
-        return 0;
+    public static int executeCommand(Socket socket, String[] args) {
+        try {
+            String command = args[0].toLowerCase();
+            switch (command) {
+                case "help":
+                    ServerUtility.sendHelp(socket); // Help
+                    break;
+                case "tz":
+                    ServerUtility.sendTimeZone(socket, args[1]); // TimeZone
+                    break;
+                case "tn":
+                    if (args.length >= 4) {
+                        int from = Integer.parseInt(args[2]);
+                        int to = Integer.parseInt(args[3]);
+                        ServerUtility.sendTranslatedNumber(socket, args[1], from, to); // Change number system
+                    }
+                    break;
+                case "exit":
+                    break;
+                default:
+                    SocketUtility.sendMessage(socket, "Unknown command");
+            }
+            return 0;
+        } catch (IOException ignore) {}
+        return -1;
     }
 
     // Function that sends a predefined text to the client that shows him the commands
