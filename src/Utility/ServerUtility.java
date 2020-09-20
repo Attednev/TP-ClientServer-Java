@@ -35,10 +35,10 @@ public class ServerUtility {
     }
 
     private static int sendHelpMessage(Socket socket) {
-        return SocketUtility.sendMessage(socket, "help - Zeige diese Anzeige an \n" +
-                "tz <zone> - Zeit in der Zeitzone \n" +
-                "tn <Zahl> <StartBasis> <EndBasis> - Umwandlung der Zahl <Zahl> aus dem System <StartBasis> ins System <EndBasis> \n" +
-                "exit - Unterbrich die Verbindung");
+        return SocketUtility.sendMessage(socket, "help - Shows this message \n" +
+                "tz <zone> - Prints the time in the given timezone \n" +
+                "tn <number> <start system> <end system> - Translates the given number form the starting system into the end system \n" +
+                "exit - Disconnect");
     }
 
     private static int sendTimeZone(Socket socket, String timeZone) {

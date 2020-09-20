@@ -31,11 +31,11 @@ public class ClientHandler implements Runnable {
             if (successValue == -1) break;
         }
 
-        System.out.println("Connection to client ended!");
+        System.out.println("<System> Connection to client ended!");
         try {
             this.clientSocket.close();
         } catch (IOException e) {
-            System.out.println("Error while closing the connection");
+            System.out.println("<System> Error while closing the connection");
         }
     }
 

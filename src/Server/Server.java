@@ -26,9 +26,9 @@ public class Server implements Runnable {
                 Socket clientSocket = this.serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 clientExecutor.execute(clientHandler);
-                System.out.println("<Server> Accepted client");
+                System.out.println("<System> Accepted client");
             } catch (IOException e) {
-                System.out.println("<Server> Error while accepting a new connection");
+                System.out.println("<System> Error while accepting a new connection");
             }
         }
     }
