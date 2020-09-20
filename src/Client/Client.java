@@ -9,7 +9,6 @@ import java.util.concurrent.*;
 
 public class Client implements Runnable {
     private Socket clientSocket = null;
-    private int lostPackageCounter = 0;
 
     protected Client(String server, int port) {
         try {
@@ -23,10 +22,28 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-        // Create reader and writer service
+        // Create writer service and execute reading here
         ExecutorService executor = Executors.newCachedThreadPool();
-        executor.execute(this::readerService);
         executor.execute(this::writerService);
+        // Reading
+        while (true) {
+            try {
+                if (this.clientSocket.getInputStream().read() == -1) { // -1 If the server dies or client exits
+                    try {
+                        this.clientSocket.close();
+                    } catch (IOException ignore) {
+                    }
+                    break;
+                }
+                // Reading and printing the message
+                String text = SocketUtility.readMessage(this.clientSocket);
+                System.out.println(text);
+            } catch (IOException e) {
+                System.out.println("WARNING: Could not read message from server"); // Reading error
+            }
+        }
+        // Close writing thread
+        executor.shutdown();
     }
 
     // Function to write user input to server
@@ -38,24 +55,6 @@ public class Client implements Runnable {
                 SocketUtility.sendMessage(this.clientSocket, text);
             } catch (IOException e) {
                 System.out.println("ERROR: Could not send command");
-            }
-        }
-    }
-
-    // Function to get the text that the server writes
-    private void readerService() {
-        while (true) {
-            try {
-                if (this.clientSocket.getInputStream().read() == -1) { // -1 If the server dies
-                    System.out.println("ERROR: Server not reachable. Aborting connection");
-                    try { this.clientSocket.close(); } catch (IOException ignore) {}
-                    return;
-                }
-                // Reading and printing the message
-                String text = SocketUtility.readMessage(this.clientSocket);
-                System.out.println(text);
-            } catch (IOException e) {
-                System.out.println("WARNING: Could not read message from server"); // Reading error
             }
         }
     }

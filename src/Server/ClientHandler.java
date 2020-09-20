@@ -23,52 +23,37 @@ public class ClientHandler implements Runnable {
     public void run() {
         // Start reading process
         while (true) {
-            String userInput;
+            // Read user input
+            String[] args;
             try {
-                userInput = SocketUtility.readMessage(this.socket);
-                System.out.println("<Server> Client command was " + userInput);
-            } catch (IOException e) {
-                if (this.socket.isConnected()) {
-                    System.out.println("<Server> Error: Failed to read user input"); // Error while reading
-                } else {
-                    // Client cut connection without "exit"
-                    System.out.println("<Server> Error: Client left");
-                    try {
-                        this.socket.close();
-                    } catch (IOException ignore) {}
-                    return; // Connection aborted so we can end the Thread
+                if (this.socket.getInputStream().read() == -1) { // No connection
+                    break;
                 }
+                // Read and split
+                String userInput = SocketUtility.readMessage(this.socket);
+                System.out.println("<Server> Client command was " + userInput);
+                args = userInput.split(" "); // Split the command into arguments
+            } catch (IOException e) {
+                System.out.println("<Server> Error: Failed to read user input"); // Error while reading
                 continue;
             }
-            String[] args = userInput.split(" "); // Split the command into arguments
+            // Handle the user input
             try {
                 if (ServerUtility.executeCommand(this.socket, args) == -1) { // Execute the command
-                    // User exited
-                    try {
-                        this.socket.close();
-                    } catch (IOException ignore) {
-                        System.out.println("Error closing the connection");
-                    }
-                    return;
+                    break; // User want to abort connection
                 }
             } catch(IOException e) {
-                // Error while executing the command
+                // Something went wrong during command execution
                 try {
-                    SocketUtility.sendMessage(this.socket, "Der Befehl war ungültig. Bitte stellen Sie sicher, dass der Befehl richtig geschrieben wurde und dass sie die richtige anzahl an argumenten haben!");
-                } catch (IOException ee) {
-                    if (this.socket.isConnected()) {
-                        System.out.println("<Server> Error: Failed to read user input"); // Error while reading
-                    } else {
-                        // Client cut connection without "exit"
-                        System.out.println("<Server> Error: Client left");
-                        try {
-                            this.socket.close();
-                        } catch (IOException ignore) {}
-                        return; // Connection aborted so we can end the Thread
-                    }
-                }
+                    SocketUtility.sendMessage(this.socket, "Der Befehl war ungültig. Bitte stellen Sie sicher, " +
+                            "dass der Befehl richtig geschrieben wurde und dass sie die richtige anzahl an argumenten haben!");
+                } catch (IOException ignore) {}
             }
         }
+        try {
+            this.socket.close();
+        } catch (IOException ignore) {
+            System.out.println("Error while closing the connection");
+        }
     }
-
 }
