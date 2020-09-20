@@ -12,7 +12,6 @@ public class Client implements Runnable {
 
     protected Client(String serverAddress, int port) {
         try {
-            // Bind to server
             this.clientSocket = new Socket(serverAddress, port);
             System.out.println("<System> Successfully connected to the server");
         } catch (IOException e) {
@@ -22,24 +21,19 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
+        if (this.clientSocket == null) return;
         ExecutorService writerExecutor = Executors.newCachedThreadPool();
         writerExecutor.execute(this::writerService);
         while (true) {
-            try {
-                if (this.clientSocket.getInputStream().read() == -1) { // -1 If the server dies or client exits
-                    try {
-                        this.clientSocket.close();
-                    } catch (IOException ignore) {
-                    }
-                    break;
-                }
-                String serverMessage = SocketUtility.readMessage(this.clientSocket);
-                System.out.println(serverMessage);
-            } catch (IOException e) {
-                System.out.println("WARNING: Could not read message from server");
-            }
+            String serverMessage = SocketUtility.readMessage(this.clientSocket);
+            if (serverMessage == null) break;
+            System.out.println(serverMessage);
         }
         writerExecutor.shutdown();
+        System.out.println("<System> Connection to the server ended!");
+        try {
+            this.clientSocket.close();
+        } catch (IOException ignore) {}
     }
 
     // Function to write user input to server

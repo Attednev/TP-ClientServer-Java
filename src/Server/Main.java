@@ -10,5 +10,6 @@ public class Main {
         Server server = new Server(5555);
         ExecutorService serverExecutor = Executors.newCachedThreadPool();
         serverExecutor.execute(server);
+        serverExecutor.shutdown();
     }
 }

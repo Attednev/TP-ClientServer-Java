@@ -11,5 +11,6 @@ public class Main {
         Client client = new Client("localhost", 5555);
         ExecutorService clientExecutor = Executors.newCachedThreadPool();
         clientExecutor.execute(client);
+        clientExecutor.shutdown();
     }
 }

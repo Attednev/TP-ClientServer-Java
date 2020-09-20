@@ -22,7 +22,7 @@ public class ClientHandler implements Runnable {
     public void run() {
         while (true) {
             String clientMessage = SocketUtility.readMessage(this.clientSocket);
-            if (clientMessage == null) continue; // Error reading TODO: break or continue
+            if (clientMessage == null) break;
 
             System.out.println("<Client> " + clientMessage);
             String[] commandArguments = clientMessage.split(" ");
@@ -30,9 +30,10 @@ public class ClientHandler implements Runnable {
             int successValue = ServerUtility.executeCommand(this.clientSocket, commandArguments);
             if (successValue == -1) break;
         }
+        System.out.println("Connection to client ended!");
         try {
             this.clientSocket.close();
-        } catch (IOException ignore) {
+        } catch (IOException e) {
             System.out.println("Error while closing the connection");
         }
     }
