@@ -11,23 +11,15 @@ public class ServerUtility {
     public static int executeCommand(Socket socket, String[] args) {
         String command = args[0].toLowerCase();
         switch (command) {
-            case "exit":
-                return -1;
-            case "help":
-                return ServerUtility.sendHelpMessage(socket);
+            case "exit": return -1;
+            case "help": return ServerUtility.sendHelpMessage(socket);
             case "tz":
-                if (args.length >= 2) {
-                    String timeZone = args[1];
-                    return ServerUtility.sendTimeZone(socket, timeZone);
-                }
+                if (args.length >= 2)
+                    return ServerUtility.sendTimeZone(socket, args[1].toLowerCase()); // Timezone
                 break;
             case "tn":
-                if (args.length >= 4) {
-                    int from = Integer.parseInt(args[2]);
-                    int to = Integer.parseInt(args[3]);
-                    String number = args[1];
-                    return ServerUtility.sendTranslatedNumber(socket, number, from, to);
-                }
+                if (args.length >= 4)
+                    return ServerUtility.sendTranslatedNumber(socket, args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3])); // Number, Source system, Destination system
                 break;
         }
         SocketUtility.sendMessage(socket, "To few arguments! Type 'help' for more information");
@@ -42,27 +34,29 @@ public class ServerUtility {
     }
 
     private static int sendTimeZone(Socket socket, String timeZone) {
-        int indexCountry = timeZone.indexOf('/') + 1;
-        char continentFirstChar = Character.toUpperCase(timeZone.charAt(0));
-        char countryFirstChar = Character.toUpperCase(timeZone.charAt(0));
-        String continentSubString = timeZone.substring(1, indexCountry).toLowerCase();
-        String countrySubString = timeZone.substring(indexCountry + 1).toLowerCase();
-        String timeZoneCamelCase = continentFirstChar + continentSubString + countryFirstChar + countrySubString;
-
         DateFormat df = new SimpleDateFormat("HH:mm:ss");
-        df.setTimeZone(TimeZone.getTimeZone(timeZoneCamelCase));
+        df.setTimeZone(TimeZone.getTimeZone(ServerUtility.getTimeZone(timeZone)));
 
         return SocketUtility.sendMessage(socket, df.format(new Date()));
     }
 
     private static int sendTranslatedNumber(Socket socket, String num, int from, int to) {
         try {
-            int dec = Integer.parseInt(num, from);
-            String number = Integer.toString(dec, to);
-            return SocketUtility.sendMessage(socket, number);
+            return SocketUtility.sendMessage(socket, ServerUtility.getTranslatedNumber(num, from, to));
         } catch (NumberFormatException e) {
             return SocketUtility.sendMessage(socket, "Invalid number system!");
         }
     }
 
+    private static String getTimeZone(String timeZone) {
+        int indexSlash = timeZone.indexOf('/');
+        // First char to upper, substring of first word, second word first char to upper, second substring
+        return Character.toUpperCase(timeZone.charAt(0)) + timeZone.substring(1, indexSlash + 1) +
+               Character.toUpperCase(timeZone.charAt(indexSlash + 1)) + timeZone.substring(indexSlash + 2);
+    }
+
+    private static String getTranslatedNumber(String num, int from, int to) throws NumberFormatException {
+        int decimalNumber = Integer.parseInt(num, from);
+        return Integer.toString(decimalNumber, to);
+    }
 }
