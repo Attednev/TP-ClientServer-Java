@@ -8,11 +8,11 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Client implements Runnable {
-    private Socket clientSocket = null;
+    private Socket socket = null;
 
     protected Client(String serverAddress, int port) {
         try {
-            this.clientSocket = new Socket(serverAddress, port);
+            this.socket = new Socket(serverAddress, port);
             System.out.println("<System> Successfully connected to the server");
         } catch (IOException e) {
             System.out.println("<System> Error, could not connect to the server");
@@ -21,7 +21,7 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-        if (this.clientSocket == null) return;
+        if (this.socket == null) return;
 
         ExecutorService writerExecutor = Executors.newCachedThreadPool();
         writerExecutor.execute(this::writerService);
@@ -33,18 +33,18 @@ public class Client implements Runnable {
 
     private void readerService() {
         while (true) {
-            String serverMessage = SocketUtility.readMessage(this.clientSocket);
+            String serverMessage = SocketUtility.readMessage(this.socket);
             if (serverMessage == null) break;
             System.out.println(serverMessage);
         }
-        SocketUtility.endConnection(this.clientSocket);
+        SocketUtility.endConnection(this.socket);
     }
 
     private void writerService() {
         while (true) {
             Scanner commandlineScanner = new Scanner(System.in);
             String userInput = commandlineScanner.nextLine();
-            SocketUtility.sendMessage(this.clientSocket, userInput);
+            SocketUtility.sendMessage(this.socket, userInput);
         }
     }
 

@@ -6,32 +6,32 @@ import Utility.SocketUtility;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
-    private final Socket clientSocket;
+    private final Socket socket;
 
     protected ClientHandler(Socket socket) {
-        this.clientSocket = socket;
+        this.socket = socket;
         this.sendInitialMessage();
     }
 
     private void sendInitialMessage() {
-        ServerUtility.executeCommand(this.clientSocket, new String[]{"help"});
+        ServerUtility.executeCommand(this.socket, new String[]{"help"});
     }
 
     @Override
     public void run() {
         this.handleClient();
-        SocketUtility.endConnection(this.clientSocket);
+        SocketUtility.endConnection(this.socket);
     }
 
     private void handleClient() {
         while (true) {
-            String clientMessage = SocketUtility.readMessage(this.clientSocket);
+            String clientMessage = SocketUtility.readMessage(this.socket);
             if (clientMessage == null) return;
 
             System.out.println("<Client> " + clientMessage);
             String[] commandArguments = clientMessage.split(" ");
 
-            int successValue = ServerUtility.executeCommand(this.clientSocket, commandArguments);
+            int successValue = ServerUtility.executeCommand(this.socket, commandArguments);
             if (successValue == -1) return;
         }
     }

@@ -7,11 +7,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server implements Runnable {
-    private ServerSocket serverSocket;
+    private ServerSocket socket;
 
     protected Server(int port) {
         try {
-            this.serverSocket = new ServerSocket(port);
+            this.socket = new ServerSocket(port);
             System.out.println("<System> Server created successfully");
         } catch (IOException e) {
             System.out.println("<System> Unable to create Server");
@@ -27,7 +27,7 @@ public class Server implements Runnable {
         ExecutorService clientExecutor = Executors.newCachedThreadPool();
         while (true) {
             try {
-                Socket clientSocket = this.serverSocket.accept();
+                Socket clientSocket = this.socket.accept();
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 clientExecutor.execute(clientHandler);
                 System.out.println("<System> Accepted client");

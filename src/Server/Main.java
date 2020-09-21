@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 public class Main {
 
-    // Main Driver function for the server
+    // Server main
     public static void main(String[] args) {
         Server server = new Server(5555);
         ExecutorService serverExecutor = Executors.newCachedThreadPool();
