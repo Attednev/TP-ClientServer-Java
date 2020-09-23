@@ -18,6 +18,9 @@ public class ServerUtility {
         switch (command) {
             case "exit": return -1;
             case "help": return ServerUtility.sendHelpMessage(socket);
+            case "itr":
+                if (args.length >= 2)
+                    return ServerUtility.sendIntToRomanResult(socket, args); // int to roman number
             case "tz":
                 if (args.length >= 2)
                     return ServerUtility.sendTimeZone(socket, args[1].toLowerCase()); // Timezone
@@ -28,7 +31,7 @@ public class ServerUtility {
                 if (args.length >= 4)
                     return ServerUtility.sendTranslatedNumber(socket, args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3])); // Number, Source system, Destination system
         }
-        SocketUtility.sendMessage(socket, "To few arguments! Type 'help' for more information");
+        SocketUtility.sendMessage(socket, "Invalid command! Type 'help' for more information");
         return 0;
     }
 
@@ -39,6 +42,7 @@ public class ServerUtility {
                 "tz <zone> - Prints the time in the given timezone \n" +
                 "tn <number> <start system> <end system> - Translates the given number form the starting system into the end system \n" +
                 "ca <number> <operator> <number> <operator> ... - Calculates the given calculation. Valid operators are + - * / % \n" +
+                "itr <number> - Prints the roman equivalent of the given number > 0 \n" +
                 "exit - Disconnect");
     }
 
@@ -123,6 +127,67 @@ public class ServerUtility {
             case "%": return String.valueOf(firstNumber % secondNumber);
         }
         throw new InvalidAttributesException();
+    }
+
+
+
+    private static int sendIntToRomanResult(Socket socket, String[] args) {
+        try {
+            int number = Integer.parseInt(args[1]);
+            if (number < 0) throw new NumberFormatException();
+            return SocketUtility.sendMessage(socket, ServerUtility.intToRoman(number));
+        } catch (NumberFormatException e) {
+            return SocketUtility.sendMessage(socket, "Not a valid integer!");
+        }
+    }
+
+    private static String intToRoman(int number) {
+        int[] numArr = numberToArray(number);
+        String romanDigit = "";
+        for (int i = numArr.length - 1; i >= 0; i--)
+            romanDigit += getRomanDigits((int) (numArr[i] * Math.pow(10, i)));
+        return romanDigit;
+    }
+
+    private static int[] numberToArray(int number) {
+        int[] numArr = new int[getNumberSize(number)];
+        for (int i = 0; i < numArr.length; i++, number /= 10)
+            numArr[i] = number % 10;
+        return numArr;
+    }
+
+    static int getNumberSize(int number) {
+        int size = 0;
+        for (int remainder = number; remainder > 0; remainder /= 10)
+            size++;
+        return size;
+    }
+
+    static String getRomanDigits(int number) {
+        int[] numberDelimiters = {1000, 500, 100, 50, 10, 5, 1};
+        for (int i = 0; i < numberDelimiters.length; i++)
+            if (number >= numberDelimiters[i]) {
+                if (number < 10)
+                    return getStringOfSequencingCharsBelowTen(number);
+                return getStringOfSequencingChars(number, numberDelimiters[i], i);
+            }
+        return "";
+    }
+
+    static String getStringOfSequencingCharsBelowTen(int number) {
+        String returnString = "";
+        returnString += number % 9 < 5 ? "I" : "V";
+        returnString += number == 9 ? "X" : (number == 4 ? "V" : "I");
+        returnString += number == 3 || number == 7 ? "I" : (number == 8 ? "II" : "");
+        return returnString;
+    }
+
+    static String getStringOfSequencingChars(int number, int increment, int arrayIndex) {
+        char[] charDelimiter = {'M', 'D', 'C', 'L', 'X', 'V', 'I'};
+        String returnValue = "";
+        for (int j = 0; j < number; j += increment)
+            returnValue += charDelimiter[arrayIndex];
+        return returnValue;
     }
 
 
