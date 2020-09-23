@@ -1,8 +1,11 @@
 package Utility;
 
+import javax.naming.directory.InvalidAttributesException;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -16,11 +19,12 @@ public class ServerUtility {
             case "tz":
                 if (args.length >= 2)
                     return ServerUtility.sendTimeZone(socket, args[1].toLowerCase()); // Timezone
-                break;
+            case "ca":
+                if (args.length >= 3)
+                    return ServerUtility.sendCalculationResult(socket, args);
             case "tn":
                 if (args.length >= 4)
                     return ServerUtility.sendTranslatedNumber(socket, args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3])); // Number, Source system, Destination system
-                break;
         }
         SocketUtility.sendMessage(socket, "To few arguments! Type 'help' for more information");
         return 0;
@@ -30,6 +34,7 @@ public class ServerUtility {
         return SocketUtility.sendMessage(socket, "help - Shows this message \n" +
                 "tz <zone> - Prints the time in the given timezone \n" +
                 "tn <number> <start system> <end system> - Translates the given number form the starting system into the end system \n" +
+                "ca <number> <operator> <number> <operator> ... - Calculates the given calculation. Valid operators are + - * / % \n" +
                 "exit - Disconnect");
     }
 
@@ -46,6 +51,49 @@ public class ServerUtility {
         } catch (NumberFormatException e) {
             return SocketUtility.sendMessage(socket, "Invalid number system!");
         }
+    }
+
+    private static int sendCalculationResult(Socket socket, String[] args) {
+        try {
+            return SocketUtility.sendMessage(socket, ServerUtility.calculate(args));
+        } catch (NumberFormatException | InvalidAttributesException e) {
+            return SocketUtility.sendMessage(socket, "Invalid calculation!");
+        }
+    }
+
+    private static String calculate(String[] args) throws NumberFormatException, InvalidAttributesException {
+        ArrayList<String> argList = (ArrayList<String>) Arrays.asList(Arrays.copyOfRange(args, 1, args.length - 1));
+        int i = 0;
+        while (argList.size() > 1 && i < argList.size())
+            for (i = 0; i < argList.size(); i++)
+                if (argList.get(i).equals("*") || argList.get(i).equals("/") || argList.get(i).equals("%")) {
+                    ServerUtility.replaceWithResult(argList, i);
+                    break;
+                }
+        for (i = 0; i < argList.size(); i++)
+            if (argList.get(i).equals("+") || argList.get(i).equals("-"))
+                ServerUtility.replaceWithResult(argList, i);
+        return argList.get(0);
+    }
+
+    private static void replaceWithResult(ArrayList<String> argList, int index) throws InvalidAttributesException {
+        argList.set(index, ServerUtility.getInterimResult(argList.get(index - 1), argList.get(index + 1), argList.get(index)));
+        if (index + 1 < argList.size()) argList.remove(index + 1);
+        if (index - 1 >= 0) argList.remove(index - 1);
+    }
+
+
+    private static String getInterimResult(String firstNumberString, String secondNumberString, String operator) throws InvalidAttributesException, ArithmeticException {
+        double firstNumber = Double.parseDouble(firstNumberString);
+        double secondNumber = Double.parseDouble(secondNumberString);
+        switch (operator) {
+            case "+": return String.valueOf(firstNumber + secondNumber);
+            case "-": return String.valueOf(firstNumber - secondNumber);
+            case "*": return String.valueOf(firstNumber * secondNumber);
+            case "/": return String.valueOf(firstNumber / secondNumber);
+            case "%": return String.valueOf(firstNumber % secondNumber);
+        }
+        throw new InvalidAttributesException();
     }
 
     private static String getTimeZone(String timeZone) {
