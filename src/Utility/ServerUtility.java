@@ -1,7 +1,5 @@
 package Utility;
 
-import Server.Server;
-
 import javax.naming.directory.InvalidAttributesException;
 import java.net.Socket;
 import java.text.DateFormat;

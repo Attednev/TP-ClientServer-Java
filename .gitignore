@@ -1,2 +1,4 @@
 # Project exclude paths
 /out/
+/.idea/
+03_TP_serverClient.iml
