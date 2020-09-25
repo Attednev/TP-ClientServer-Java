@@ -87,25 +87,15 @@ public class ServerUtility {
 
     private static String calculate(String[] args) throws NumberFormatException, InvalidAttributesException, ClassCastException {
         ArrayList<String> argList = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(args, 1, args.length)));
-        ServerUtility.calculateMulDivMod(argList);
-        ServerUtility.calculateAddSub(argList);
+        ServerUtility.calculateOperators(argList, new ArrayList<>(Arrays.asList("*", "/", "%")));
+        ServerUtility.calculateOperators(argList, new ArrayList<>(Arrays.asList("+", "-")));
         return argList.get(0);
     }
 
-    private static void calculateMulDivMod(ArrayList<String> argList) throws InvalidAttributesException, NumberFormatException {
-        int i = 0;
-        while (argList.size() > 1 && i < argList.size())
-            for (i = 0; i < argList.size(); i++)
-                if (argList.get(i).equals("*") || argList.get(i).equals("/") || argList.get(i).equals("%")) {
-                    ServerUtility.replaceWithResult(argList, i);
-                    return;
-                }
-    }
-
-    private static void calculateAddSub(ArrayList<String> argList) throws InvalidAttributesException, NumberFormatException {
+    private static void calculateOperators(ArrayList<String> argList, ArrayList<String> operators) throws InvalidAttributesException, NumberFormatException {
         for (int i = 0; i < argList.size(); i++)
-            if (argList.get(i).equals("+") || argList.get(i).equals("-"))
-                ServerUtility.replaceWithResult(argList, i);
+            if (operators.contains(argList.get(i)))
+                ServerUtility.replaceWithResult(argList, i--);
     }
 
     private static void replaceWithResult(ArrayList<String> argList, int index) throws InvalidAttributesException, NumberFormatException {
