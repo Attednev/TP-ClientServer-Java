@@ -144,14 +144,14 @@ public class ServerUtility {
         return numArr;
     }
 
-    static int getNumberSize(int number) {
+    private static int getNumberSize(int number) {
         int size = 0;
         for (int remainder = number; remainder > 0; remainder /= 10)
             size++;
         return size;
     }
 
-    static String getRomanDigits(int number) {
+    private static String getRomanDigits(int number) {
         int[] numberDelimiters = {1000, 500, 100, 50, 10, 5, 1};
         for (int i = 0; i < numberDelimiters.length; i++)
             if (number >= numberDelimiters[i])
@@ -159,7 +159,7 @@ public class ServerUtility {
         return "";
     }
 
-    static String getStringOfSequencingCharsBelowTen(int number) {
+    private static String getStringOfSequencingCharsBelowTen(int number) {
         String returnString = "";
         returnString += number % 9 < 5 ? "I" : "V";
         returnString += number == 9 ? "X" : (number == 4 ? "V" : "I");
@@ -167,7 +167,7 @@ public class ServerUtility {
         return returnString;
     }
 
-    static String getStringOfSequencingChars(int number, int increment, int arrayIndex) {
+    private static String getStringOfSequencingChars(int number, int increment, int arrayIndex) {
         if (number < 10) return getStringOfSequencingCharsBelowTen(number);
         char[] charDelimiter = {'M', 'D', 'C', 'L', 'X', 'V', 'I'};
         String returnValue = "";
