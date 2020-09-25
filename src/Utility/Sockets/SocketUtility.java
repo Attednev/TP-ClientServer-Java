@@ -1,4 +1,4 @@
-package Utility;
+package Utility.Sockets;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

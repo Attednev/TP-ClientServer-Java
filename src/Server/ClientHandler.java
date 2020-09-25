@@ -1,7 +1,7 @@
 package Server;
 
-import Utility.ServerUtility;
-import Utility.SocketUtility;
+import Utility.Commands.CommandHandler;
+import Utility.Sockets.SocketUtility;
 
 import java.net.Socket;
 
@@ -14,7 +14,7 @@ public class ClientHandler implements Runnable {
     }
 
     private void sendInitialMessage() {
-        ServerUtility.executeCommand(this.socket, new String[]{"help"});
+        CommandHandler.executeCommand(this.socket, new String[]{"help"});
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ClientHandler implements Runnable {
             System.out.println("<Client> " + clientMessage);
             String[] commandArguments = clientMessage.split(" ");
 
-            int successValue = ServerUtility.executeCommand(this.socket, commandArguments);
+            int successValue = CommandHandler.executeCommand(this.socket, commandArguments);
             if (successValue == -1) return;
         }
     }
