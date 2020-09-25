@@ -154,11 +154,8 @@ public class ServerUtility {
     static String getRomanDigits(int number) {
         int[] numberDelimiters = {1000, 500, 100, 50, 10, 5, 1};
         for (int i = 0; i < numberDelimiters.length; i++)
-            if (number >= numberDelimiters[i]) {
-                if (number < 10)
-                    return getStringOfSequencingCharsBelowTen(number);
+            if (number >= numberDelimiters[i])
                 return getStringOfSequencingChars(number, numberDelimiters[i], i);
-            }
         return "";
     }
 
@@ -171,6 +168,7 @@ public class ServerUtility {
     }
 
     static String getStringOfSequencingChars(int number, int increment, int arrayIndex) {
+        if (number < 10) return getStringOfSequencingCharsBelowTen(number);
         char[] charDelimiter = {'M', 'D', 'C', 'L', 'X', 'V', 'I'};
         String returnValue = "";
         for (int j = 0; j < number; j += increment)
