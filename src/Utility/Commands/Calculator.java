@@ -25,15 +25,21 @@ public class Calculator {
     }
 
     private static void calculateOperators(ArrayList<String> argList, ArrayList<String> operators) throws InvalidAttributesException, NumberFormatException {
-        for (int i = 0; i < argList.size(); i++)
-            if (operators.contains(argList.get(i)))
+        for (int i = 0; i < argList.size(); i++) {
+            if (operators.contains(argList.get(i))) {
                 Calculator.replaceWithResult(argList, i--);
+            }
+        }
     }
 
     private static void replaceWithResult(ArrayList<String> argList, int index) throws InvalidAttributesException, NumberFormatException {
         argList.set(index, Calculator.getInterimResult(argList.get(index - 1), argList.get(index + 1), argList.get(index)));
-        if (index + 1 < argList.size()) argList.remove(index + 1);
-        if (index - 1 >= 0) argList.remove(index - 1);
+        if (index + 1 < argList.size()) {
+            argList.remove(index + 1);
+        }
+        if (index - 1 >= 0) {
+            argList.remove(index - 1);
+        }
     }
 
     private static String getInterimResult(String firstNumberString, String secondNumberString, String operator) throws InvalidAttributesException, ArithmeticException, NumberFormatException {
