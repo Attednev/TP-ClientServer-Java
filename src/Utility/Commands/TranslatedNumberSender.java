@@ -14,7 +14,7 @@ public class TranslatedNumberSender {
         }
     }
 
-    private static String getTranslatedNumber(String num, int from, int to) throws NumberFormatException {
+    public static String getTranslatedNumber(String num, int from, int to) throws NumberFormatException {
         int decimalNumber = Integer.parseInt(num, from);
         return Integer.toString(decimalNumber, to);
     }

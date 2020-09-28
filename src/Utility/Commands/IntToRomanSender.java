@@ -16,7 +16,7 @@ public class IntToRomanSender {
         }
     }
 
-    private static String intToRoman(int number) {
+    public static String intToRoman(int number) {
         int[] numArr = numberToArray(number);
         String romanDigit = "";
         for (int i = numArr.length - 1; i >= 0; i--) {
@@ -25,7 +25,7 @@ public class IntToRomanSender {
         return romanDigit;
     }
 
-    private static int[] numberToArray(int number) {
+    public static int[] numberToArray(int number) {
         int[] numArr = new int[getNumberSize(number)];
         for (int i = 0; i < numArr.length; i++, number /= 10) {
             numArr[i] = number % 10;
@@ -33,13 +33,13 @@ public class IntToRomanSender {
         return numArr;
     }
 
-    private static int getNumberSize(int number) {
+    public static int getNumberSize(int number) {
         int size = 0;
         for (int remainder = number; remainder > 0; remainder /= 10, size++);
         return size;
     }
 
-    private static String getRomanDigits(int number) {
+    public static String getRomanDigits(int number) {
         int[] numberDelimiters = {1000, 500, 100, 50, 10, 5, 1};
         for (int i = 0; i < numberDelimiters.length; i++) {
             if (number >= numberDelimiters[i]) {
@@ -49,7 +49,7 @@ public class IntToRomanSender {
         return "";
     }
 
-    private static String getStringOfSequencingCharsBelowTen(int number) {
+    public static String getStringOfSequencingCharsBelowTen(int number) {
         String returnString = "";
         returnString += number % 9 < 5 ? "I" : "V";
         returnString += number == 9 ? "X" : (number == 4 ? "V" : "I");
@@ -57,7 +57,7 @@ public class IntToRomanSender {
         return returnString;
     }
 
-    private static String getStringOfSequencingChars(int number, int increment, int arrayIndex) {
+    public static String getStringOfSequencingChars(int number, int increment, int arrayIndex) {
         if (number < 10) return getStringOfSequencingCharsBelowTen(number);
         char[] charDelimiter = {'M', 'D', 'C', 'L', 'X', 'V', 'I'};
         String returnValue = "";

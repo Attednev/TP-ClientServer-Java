@@ -10,18 +10,21 @@ import java.util.TimeZone;
 
 public class TimeZoneSender {
 
-    static int sendTimeZone(Socket socket, String timeZone) {
-        DateFormat df = new SimpleDateFormat("HH:mm:ss");
-        df.setTimeZone(TimeZone.getTimeZone(TimeZoneSender.getTimeZone(timeZone)));
-
-        return SocketUtility.sendMessage(socket, df.format(new Date()));
+    public static int sendTimeZone(Socket socket, String timeZone) {
+        return SocketUtility.sendMessage(socket, TimeZoneSender.getMessageToSend(timeZone));
     }
 
-    private static String getTimeZone(String timeZone) {
+    public static String getMessageToSend(String timeZone) {
+        DateFormat df = new SimpleDateFormat("HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone(TimeZoneSender.refactorTimeZoneString(timeZone)));
+        return df.format(new Date());
+    }
+
+    public static String refactorTimeZoneString(String timeZone) {
         int indexSlash = timeZone.indexOf('/');
         // First char to upper, substring of first word, second word first char to upper, second substring
-        return Character.toUpperCase(timeZone.charAt(0)) + timeZone.substring(1, indexSlash + 1) +
-                Character.toUpperCase(timeZone.charAt(indexSlash + 1)) + timeZone.substring(indexSlash + 2);
+        return Character.toUpperCase(timeZone.charAt(0)) + timeZone.substring(1, indexSlash + 1).toLowerCase() +
+                Character.toUpperCase(timeZone.charAt(indexSlash + 1)) + timeZone.substring(indexSlash + 2).toLowerCase();
     }
 
 }
