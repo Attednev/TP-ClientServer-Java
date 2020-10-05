@@ -1,6 +1,6 @@
-package Tests;
+package test.java;
 
-import Utility.Commands.Calculator;
+import main.java.Utility.Commands.Calculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

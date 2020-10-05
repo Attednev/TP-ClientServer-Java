@@ -1,6 +1,6 @@
-package Utility.Commands;
+package main.java.Utility.Commands;
 
-import Utility.Sockets.SocketUtility;
+import main.java.Utility.Sockets.SocketUtility;
 
 import java.net.Socket;
 

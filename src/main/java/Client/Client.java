@@ -1,6 +1,6 @@
-package Client;
+package main.java.Client;
 
-import Utility.Sockets.SocketUtility;
+import main.java.Utility.Sockets.SocketUtility;
 
 import java.io.*;
 import java.net.Socket;

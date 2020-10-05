@@ -1,7 +1,7 @@
-package Server;
+package main.java.Server;
 
-import Utility.Commands.CommandHandler;
-import Utility.Sockets.SocketUtility;
+import main.java.Utility.Commands.CommandHandler;
+import main.java.Utility.Sockets.SocketUtility;
 
 import java.net.Socket;
 

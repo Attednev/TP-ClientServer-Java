@@ -1,6 +1,6 @@
-package Tests;
+package test.java;
 
-import Utility.Commands.TranslatedNumberSender;
+import main.java.Utility.Commands.TranslatedNumberSender;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
