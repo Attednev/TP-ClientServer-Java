@@ -33,6 +33,8 @@ public class Server implements Runnable {
                 System.out.println("<System> Accepted client");
             } catch (IOException e) {
                 System.out.println("<System> Error while accepting a new connection");
+            } catch (RuntimeException e) {
+                break;
             }
         }
     }
