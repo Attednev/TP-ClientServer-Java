@@ -1,6 +1,4 @@
-package test.java;
-
-import main.java.Utility.Commands.TimeZoneSender;
+import utility.commands.TimeZoneSender;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

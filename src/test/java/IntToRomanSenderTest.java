@@ -1,6 +1,4 @@
-package test.java;
-
-import main.java.Utility.Commands.IntToRomanSender;
+import utility.commands.IntToRomanSender;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

@@ -1,0 +1,6 @@
+projectKey=groupId:TP-ClientServer-Java
+serverUrl=http://localhost:9000
+serverVersion=8.4.2.36762
+dashboardUrl=http://localhost:9000/dashboard?id=groupId%3ATP-ClientServer-Java
+ceTaskId=AXUN95PFnF2pBSgD4XJ9
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AXUN95PFnF2pBSgD4XJ9

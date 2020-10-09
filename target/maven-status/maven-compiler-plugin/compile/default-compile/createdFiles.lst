@@ -1,0 +1,12 @@
+main/java/Utility/Sockets/SocketUtility.class
+main/java/Client/Main.class
+main/java/Utility/Commands/CommandHandler.class
+main/java/Server/ClientHandler.class
+main/java/Utility/Commands/Calculator.class
+main/java/Utility/Commands/HelpSender.class
+main/java/Utility/Commands/IntToRomanSender.class
+main/java/Utility/Commands/TimeZoneSender.class
+main/java/Server/Server.class
+main/java/Utility/Commands/TranslatedNumberSender.class
+main/java/Server/Main.class
+main/java/Client/Client.class
